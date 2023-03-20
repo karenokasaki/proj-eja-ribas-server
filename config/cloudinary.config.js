@@ -19,11 +19,10 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinaryInst,
   params: {
     folder: "eja-ribas",
-    allowed_formats: ["jpg", "png"],
-    use_filename: true,
+    allowed_formats: ["jpg", "png", "pdf"],
   },
 });
 
 const uploadImg = multer({ storage: storage });
 
-export default uploadImg;
+export { uploadImg, cloudinaryInst };

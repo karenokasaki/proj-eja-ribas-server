@@ -19,8 +19,9 @@ const PostSchema = new Schema(
     photos: [{ type: String }],
     stage: {
       type: String,
-      enum: ["stage1", "stage2", "stage3", "stage4"],
+      enum: ["1", "2", "3", "4"],
     },
+    visible: { type: Boolean, default: true },
   },
   {
     timestamps: true,

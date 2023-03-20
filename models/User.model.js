@@ -22,6 +22,10 @@ const UserSchema = new Schema(
 
     userIsActive: { type: Boolean, default: true },
 
+    school: { type: String },
+    course: { type: String },
+    about: { type: String },
+
     posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
 
     photo: {

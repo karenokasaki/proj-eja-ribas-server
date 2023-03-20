@@ -3,6 +3,7 @@ import PostModel from "../models/post.model.js";
 import UserModel from "../models/User.model.js";
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
+import isAdmin from "../middlewares/isAdmin.js";
 
 const postRouter = express.Router();
 
@@ -43,6 +44,21 @@ postRouter.get("/", isAuth, attachCurrentUser, async (req, res) => {
   }
 });
 
+postRouter.get("/:id", async (req, res) => {
+  try {
+    const posts = await PostModel.findOne({
+      _id: req.params.id,
+    }).populate({
+      path: "user",
+      select: "name",
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
 // get a post by id
 postRouter.get("/:id", async (req, res) => {
   try {
@@ -66,9 +82,6 @@ postRouter.put("/:id", isAuth, attachCurrentUser, async (req, res) => {
     const post = await PostModel.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
-    }
-    if (post.user.toString() !== req.currentUser._id.toString()) {
-      return res.status(401).json({ error: "Unuserized" });
     }
 
     const updatedPost = await PostModel.findByIdAndUpdate(
@@ -126,5 +139,25 @@ postRouter.get("/get/:stage", isAuth, attachCurrentUser, async (req, res) => {
     res.status(500).json({ error });
   }
 });
+
+postRouter.get(
+  "/admin/all-posts",
+  isAuth,
+  attachCurrentUser,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const allPosts = await PostModel.find({}).populate({
+        path: "user",
+        select: "name",
+      });
+
+      return res.status(200).json(allPosts);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
+  }
+);
 
 export default postRouter;

@@ -3,8 +3,10 @@ import bcrypt from "bcrypt";
 
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
+import isAdmin from "../middlewares/isAdmin.js";
 import generateToken from "../config/jwt.config.js";
 import userModel from "../models/User.model.js";
+import UserModel from "../models/User.model.js";
 
 const router = express.Router();
 const saltRounds = 10;
@@ -190,6 +192,23 @@ router.put(
       delete activeUser._doc.__v;
 
       return res.status(200).json(activeUser);
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  }
+);
+
+//ADMIN
+router.get(
+  "/admin/all-users",
+  isAuth,
+  attachCurrentUser,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const allUsers = await UserModel.find({}, { passwordHash: 0 });
+
+      return res.status(200).json(allUsers);
     } catch (error) {
       return res.status(500).json({ msg: error.message });
     }
