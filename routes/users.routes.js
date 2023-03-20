@@ -54,6 +54,7 @@ router.post("/sign-up", async (req, res) => {
 // Rota de Login
 router.post("/login", async (req, res) => {
   try {
+    console.log("login");
     // extrai o email e password da requisição do usuário.
     const { email, password } = req.body;
 

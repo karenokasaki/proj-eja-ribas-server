@@ -17,7 +17,6 @@ router.post(
   attachCurrentUser,
   uploadImg.single("file"),
   (req, res) => {
-    console.log("here");
     const loggedUser = req.currentUser;
 
     // Verifica se a conta do usuário está ativa.

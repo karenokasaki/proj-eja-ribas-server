@@ -44,23 +44,8 @@ postRouter.get("/", isAuth, attachCurrentUser, async (req, res) => {
   }
 });
 
-postRouter.get("/:id", async (req, res) => {
-  try {
-    const posts = await PostModel.findOne({
-      _id: req.params.id,
-    }).populate({
-      path: "user",
-      select: "name",
-    });
-    res.status(200).json(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error });
-  }
-});
-
 // get a post by id
-postRouter.get("/:id", async (req, res) => {
+postRouter.get("/:id", isAuth, attachCurrentUser, async (req, res) => {
   try {
     const post = await PostModel.findById(req.params.id).populate({
       path: "user",
@@ -159,5 +144,21 @@ postRouter.get(
     }
   }
 );
+
+//unprotected routes
+postRouter.get("/unprotect/:idUser", async (req, res) => {
+  try {
+    const posts = await PostModel.find({
+      user: req.params.idUser,
+    }).populate({
+      path: "user",
+      select: "name",
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
 
 export default postRouter;

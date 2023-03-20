@@ -17,6 +17,7 @@ const PostSchema = new Schema(
     theme: { type: String, required: true },
     description: { type: String, required: true },
     photos: [{ type: String }],
+    pdf: [{ type: String }],
     stage: {
       type: String,
       enum: ["1", "2", "3", "4"],
