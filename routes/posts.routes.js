@@ -125,6 +125,7 @@ postRouter.get("/get/:stage", isAuth, attachCurrentUser, async (req, res) => {
   }
 });
 
+//ADMIN
 postRouter.get(
   "/admin/all-posts",
   isAuth,
@@ -149,11 +150,13 @@ postRouter.get(
 postRouter.get("/unprotect/:idUser", async (req, res) => {
   try {
     const posts = await PostModel.find({
-      user: req.params.idUser,
-    }).populate({
-      path: "user",
-      select: "name",
-    });
+      $and: [{ user: req.params.idUser }, { visible: true }],
+    })
+      .populate({
+        path: "user",
+        select: "name",
+      })
+      .sort({ stage: 1 });
     res.status(200).json(posts);
   } catch (error) {
     console.error(error);

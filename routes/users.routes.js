@@ -64,9 +64,7 @@ router.post("/login", async (req, res) => {
     // Verificar se existe o usuário no nosso banco de dados.
     if (!user) {
       // Retorna Bad Request
-      return res
-        .status(400)
-        .json({ msg: "This email is not yet registered in our website!" });
+      return res.status(400).json({ msg: "Email ou senha incorretos" });
     }
 
     // Verificar se a senha digitada pelo usuário é igual ao do banco de dados
