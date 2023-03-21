@@ -24,8 +24,8 @@ app.use("/upload-image", uploadRouter);
 
 app.use("/resetPassword", resetPasswordRouter);
 
-connect();
-
-app.listen(Number(process.env.PORT), () => {
-  console.log(`Server up and ruining at - port: ${process.env.PORT}`);
+connect().then(() => {
+  app.listen(Number(process.env.PORT), () => {
+    console.log(`Server up and ruining at - port: ${process.env.PORT}`);
+  });
 });
