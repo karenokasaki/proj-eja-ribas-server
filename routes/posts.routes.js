@@ -4,6 +4,7 @@ import UserModel from "../models/User.model.js";
 import isAuth from "../middlewares/isAuth.js";
 import attachCurrentUser from "../middlewares/attachCurrentUser.js";
 import isAdmin from "../middlewares/isAdmin.js";
+import axios from "axios";
 
 const postRouter = express.Router();
 
@@ -86,6 +87,7 @@ postRouter.put("/:id", isAuth, attachCurrentUser, async (req, res) => {
 // delete a post
 postRouter.delete("/:id", isAuth, attachCurrentUser, async (req, res) => {
   try {
+    console.log("rota delete");
     const post = await PostModel.findById(req.params.id);
 
     if (!post) {
@@ -93,6 +95,26 @@ postRouter.delete("/:id", isAuth, attachCurrentUser, async (req, res) => {
     }
     if (post.user.toString() !== req.currentUser._id.toString()) {
       return res.status(401).json({ error: "Unuserized" });
+    }
+
+    //removing photos and pdf from cloudnary
+    function getPublicId(url) {
+      return url.split("/").slice(-1)[0].split(".")[0];
+    }
+    for (let i = 0; i < post.photos.length; i++) {
+      const response = await axios.delete(
+        `${process.env.SERVER}/upload-image/delete-image/${getPublicId(
+          post.photos[i]
+        )}`
+      );
+    }
+
+    for (let i = 0; i < post.pdf.length; i++) {
+      const response = await axios.delete(
+        `${process.env.SERVER}/upload-image/delete-image/${getPublicId(
+          post.pdf[i]
+        )}`
+      );
     }
 
     await post.remove();

@@ -1,5 +1,6 @@
 //importar o express
 import { Router } from "express";
+
 // instanciar as rotas pegando do express
 const router = Router();
 
